@@ -1,6 +1,6 @@
 import React from 'react';
 import { LeadDetails } from '../types';
-import { CheckCircle, Clock, Thermometer, User, Phone, ClipboardList } from 'lucide-react';
+import { CheckCircle, Clock, Thermometer, User, Phone, ClipboardList, MapPin } from 'lucide-react';
 
 interface InfoPanelProps {
   lead: Partial<LeadDetails>;
@@ -49,6 +49,16 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
                 </div>
                 <div className="text-lg text-white font-medium pl-7 min-h-[1.75rem]">
                     {lead.phone || '---'}
+                </div>
+            </div>
+
+            <div className={`p-4 rounded-lg border transition-colors duration-300 ${lead.address ? 'bg-sky-900/20 border-sky-500/30' : 'bg-slate-800/30 border-slate-700/30'}`}>
+                <div className="flex items-center gap-3 mb-1">
+                    <MapPin className="w-4 h-4 text-slate-400" />
+                    <span className="text-xs text-slate-400 uppercase tracking-wider">Address</span>
+                </div>
+                <div className="text-lg text-white font-medium pl-7 min-h-[1.75rem]">
+                    {lead.address || '---'}
                 </div>
             </div>
 

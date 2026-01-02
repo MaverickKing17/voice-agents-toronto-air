@@ -38,6 +38,10 @@ export const useGeminiLive = ({ onLeadCaptured }: UseGeminiLiveProps) => {
     try {
       setError(null);
       
+      if (!process.env.API_KEY) {
+        throw new Error("API Key is missing. Please add 'API_KEY' to your Vercel Environment Variables.");
+      }
+
       // Initialize Audio Contexts
       inputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 });
       outputAudioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });

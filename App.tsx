@@ -45,13 +45,13 @@ const App: React.FC = () => {
                 <Snowflake className="w-5 h-5 text-white" />
              </div>
              <div>
-                <h1 className="text-lg font-bold tracking-tight text-white">Toronto Air Systems</h1>
+                <h1 className="text-lg font-bold tracking-tight text-white">Green Choice Heating & Cooling</h1>
                 <p className="text-xs text-slate-400">Dispatch & Triage AI • v2.5</p>
              </div>
           </div>
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-2 text-xs font-medium text-slate-500">
-                <span className="flex items-center gap-1.5"><Flame className="w-3 h-3" /> Heritage Specialist</span>
+                <span className="flex items-center gap-1.5"><Flame className="w-3 h-3" /> Green Choice</span>
                 <span className="w-1 h-1 rounded-full bg-slate-700" />
                 <span>GTA 2026 Rebate Ready</span>
             </div>
@@ -86,7 +86,7 @@ const App: React.FC = () => {
                     <div className="absolute top-6 left-6 flex items-center gap-2 z-10">
                         <div className={`w-2 h-2 rounded-full ${isSpeaking ? 'bg-sky-400 animate-pulse' : 'bg-slate-600'}`} />
                         <span className="text-xs font-medium text-slate-400 tracking-widest uppercase">
-                            {isConnected ? (isSpeaking ? 'Marcus Speaking...' : 'Listening') : 'Standby'}
+                            {isConnected ? (isSpeaking ? 'Agent Speaking...' : 'Listening') : 'Standby'}
                         </span>
                     </div>
 

@@ -7,6 +7,7 @@ export interface AudioState {
 export interface LeadDetails {
   name: string;
   phone: string;
+  address?: string;
   type: 'emergency' | 'rebate' | 'general';
   heatingSource?: 'gas' | 'oil' | 'electric';
   status: 'collecting' | 'complete';
