@@ -18,3 +18,11 @@ export interface ServiceMetric {
   value: number;
   unit: string;
 }
+
+export interface Message {
+  id: string;
+  role: 'user' | 'agent' | 'system';
+  text: string;
+  timestamp: Date;
+  isPartial?: boolean;
+}

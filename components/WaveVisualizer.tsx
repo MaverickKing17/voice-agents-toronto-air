@@ -20,7 +20,6 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
     let phase = 0;
     
     const render = () => {
-        // Resize logic (could be optimized)
         canvas.width = canvas.parentElement?.clientWidth || 300;
         canvas.height = canvas.parentElement?.clientHeight || 150;
         
@@ -31,39 +30,44 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
         ctx.clearRect(0, 0, width, height);
         
         if (!isConnected) {
-            // Idle state line
             ctx.beginPath();
             ctx.moveTo(0, centerY);
             ctx.lineTo(width, centerY);
-            ctx.strokeStyle = 'rgba(75, 85, 99, 0.3)';
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.2)'; // Emerald 500 low opacity
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
             ctx.stroke();
+            ctx.setLineDash([]);
             return;
         }
 
-        // Active visualization
-        const baseAmplitude = isSpeaking ? (volume / 255) * (height / 3) : 5;
+        const baseAmplitude = isSpeaking ? (volume / 255) * (height / 2.5) : 5;
         const frequency = isSpeaking ? 0.1 : 0.05;
         const speed = isSpeaking ? 0.2 : 0.05;
         
         phase += speed;
         
-        // Draw multiple sine waves for effect
-        for (let i = 0; i < 3; i++) {
+        // Draw multiple sine waves
+        for (let i = 0; i < 4; i++) {
             ctx.beginPath();
-            ctx.lineWidth = 2;
+            ctx.lineWidth = isSpeaking ? 2 : 1;
             
-            // Color variations based on state
             if (isSpeaking) {
-                // Marcus speaking: Professional Blue/Cyan
-                ctx.strokeStyle = `rgba(14, 165, 233, ${0.5 + (i * 0.15)})`; 
+                // Agent Speaking: Mix of Emerald and Cyan
+                const color = i % 2 === 0 ? '16, 185, 129' : '6, 182, 212'; // Emerald vs Cyan
+                ctx.strokeStyle = `rgba(${color}, ${0.6 + (i * 0.1)})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = `rgba(${color}, 0.5)`;
             } else {
-                // Listening: Warm Amber (attention)
+                // Listening: Warm Amber/Orange to indicate attention
                 ctx.strokeStyle = `rgba(245, 158, 11, ${0.4 + (i * 0.15)})`;
+                ctx.shadowBlur = 0;
             }
             
             for (let x = 0; x < width; x++) {
-                const y = centerY + Math.sin(x * frequency + phase + i) * (baseAmplitude + (i * 5)) * Math.sin(x / width * Math.PI); // Windowing function
+                // Multi-sine logic for organic look
+                const y = centerY + 
+                          Math.sin(x * frequency + phase + i) * (baseAmplitude + (i * 5)) * Math.sin(x / width * Math.PI);
                 if (x === 0) ctx.moveTo(x, y);
                 else ctx.lineTo(x, y);
             }

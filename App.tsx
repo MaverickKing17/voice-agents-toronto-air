@@ -3,8 +3,9 @@ import { useGeminiLive } from './hooks/useGeminiLive';
 import { WaveVisualizer } from './components/WaveVisualizer';
 import { InfoPanel } from './components/InfoPanel';
 import { DashboardCharts } from './components/DashboardCharts';
+import { Transcript } from './components/Transcript';
 import { LeadDetails } from './types';
-import { Mic, MicOff, PhoneCall, AlertCircle, Snowflake, Flame, Activity, Sliders } from 'lucide-react';
+import { Mic, MicOff, PhoneCall, AlertCircle, Snowflake, Flame, Activity, Sliders, Leaf } from 'lucide-react';
 
 const App: React.FC = () => {
   const [leadDetails, setLeadDetails] = useState<Partial<LeadDetails>>({});
@@ -21,7 +22,8 @@ const App: React.FC = () => {
     volume, 
     error,
     micSensitivity,
-    setMicSensitivity 
+    setMicSensitivity,
+    messages
   } = useGeminiLive({
     onLeadCaptured: handleLeadUpdate
   });
@@ -35,133 +37,149 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-sky-500/30">
+    <div className="min-h-screen bg-[#020617] text-slate-100 font-sans selection:bg-emerald-500/30 overflow-hidden relative">
       
+      {/* Cyber Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      <div className="absolute inset-0 bg-radial-gradient from-emerald-900/10 via-transparent to-transparent pointer-events-none" />
+
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 flex items-center justify-center">
-                <Snowflake className="w-5 h-5 text-white" />
+      <header className="fixed top-0 w-full z-50 bg-[#020617]/80 backdrop-blur-xl border-b border-white/5 shadow-2xl">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.4)]">
+                <Leaf className="w-6 h-6 text-white" />
              </div>
              <div>
-                <h1 className="text-lg font-bold tracking-tight text-white">Green Choice Heating & Cooling</h1>
-                <p className="text-xs text-slate-400">Dispatch & Triage AI • v2.5</p>
+                <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    Green Choice
+                    <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-emerald-400 border border-emerald-500/20">AI OPS</span>
+                </h1>
+                <p className="text-xs text-slate-400 font-mono">Heating & Cooling Dispatch System</p>
              </div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-2 text-xs font-medium text-slate-500">
-                <span className="flex items-center gap-1.5"><Flame className="w-3 h-3" /> Green Choice</span>
-                <span className="w-1 h-1 rounded-full bg-slate-700" />
-                <span>GTA 2026 Rebate Ready</span>
-            </div>
-            <button 
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-sm transition-colors border border-slate-700"
+          <div className="flex items-center gap-4">
+             <div className="hidden md:flex items-center gap-2 bg-slate-900/50 rounded-full px-4 py-1.5 border border-white/5">
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'}`} />
+                <span className="text-xs font-mono text-slate-400 uppercase">
+                    {isConnected ? 'System Active' : 'Offline'}
+                </span>
+             </div>
+             <button 
+                className="bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-2 rounded-lg text-sm transition-colors border border-white/10 font-medium"
                 onClick={() => window.open('https://ai.google.dev/gemini-api/docs/billing', '_blank')}
             >
-                API Info
+                API Status
             </button>
           </div>
         </div>
       </header>
 
-      <main className="pt-24 pb-12 px-6 max-w-7xl mx-auto h-[calc(100vh)] flex flex-col gap-6">
+      <main className="pt-28 pb-6 px-4 md:px-8 max-w-[1600px] mx-auto h-screen flex flex-col gap-6 relative z-10">
         
-        {/* Error Banner */}
         {error && (
-            <div className="bg-rose-500/10 border border-rose-500/20 text-rose-200 px-4 py-3 rounded-xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+            <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-red-500/10 border border-red-500/50 text-red-200 px-6 py-3 rounded-full backdrop-blur-md flex items-center gap-3 shadow-xl animate-in fade-in slide-in-from-top-2">
                 <AlertCircle className="w-5 h-5" />
-                <span>{error}</span>
+                <span className="font-medium">{error}</span>
             </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-0">
             
-            {/* Left Col: Main Interface */}
-            <div className="lg:col-span-8 flex flex-col gap-6">
+            {/* LEFT COLUMN: VISUALIZER & CONTROLS */}
+            <div className="lg:col-span-8 flex flex-col gap-6 h-full">
                 
-                {/* Visualizer Card */}
-                <div className="relative flex-1 bg-gradient-to-b from-slate-900 to-slate-900/50 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-                    {/* Status Indicator (Top Left) */}
-                    <div className="absolute top-6 left-6 flex items-center gap-2 z-10">
-                        <div className={`w-2 h-2 rounded-full ${isSpeaking ? 'bg-sky-400 animate-pulse' : 'bg-slate-600'}`} />
-                        <span className="text-xs font-medium text-slate-400 tracking-widest uppercase">
-                            {isConnected ? (isSpeaking ? 'Agent Speaking...' : 'Listening') : 'Standby'}
-                        </span>
+                {/* Main Visualizer Card */}
+                <div className="relative flex-[2] bg-slate-900/40 border border-white/10 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-sm group">
+                    <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-50" />
+                    
+                    {/* Top Bar Overlay */}
+                    <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-start z-20">
+                         <div className="flex flex-col">
+                            <span className="text-xs font-mono text-emerald-400/80 tracking-widest uppercase mb-1">Audio Stream</span>
+                            <div className="flex items-center gap-2">
+                                <Activity className="w-4 h-4 text-emerald-500" />
+                                <span className="text-lg font-bold text-white tracking-tight">
+                                    {isSpeaking ? 'Agent Speaking' : isConnected ? 'Listening...' : 'Standby'}
+                                </span>
+                            </div>
+                         </div>
+                         
+                         {/* Sensitivity Control */}
+                         <div className="flex flex-col items-end gap-1.5 group/slider">
+                            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 transition-colors hover:border-emerald-500/30">
+                                <Sliders className="w-3.5 h-3.5 text-slate-400" />
+                                <input 
+                                    type="range" 
+                                    min="0" 
+                                    max="1" 
+                                    step="0.01"
+                                    value={micSensitivity}
+                                    onChange={(e) => setMicSensitivity(parseFloat(e.target.value))}
+                                    className="w-24 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-400 [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(52,211,153,0.5)]"
+                                />
+                            </div>
+                            <span className="text-[10px] text-slate-500 font-mono tracking-wider opacity-0 group-hover/slider:opacity-100 transition-opacity">GAIN CONTROL</span>
+                         </div>
                     </div>
 
-                    {/* Mic Sensitivity Control (Top Right) */}
-                    <div className="absolute top-6 right-6 flex flex-col items-end gap-1 z-10">
-                        <div className="flex items-center gap-2 bg-slate-900/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
-                            <Sliders className="w-3 h-3 text-slate-400" />
-                            <input 
-                                type="range" 
-                                min="0" 
-                                max="1" 
-                                step="0.01"
-                                value={micSensitivity}
-                                onChange={(e) => setMicSensitivity(parseFloat(e.target.value))}
-                                className="w-20 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sky-400"
-                                title="Microphone Sensitivity"
-                            />
-                        </div>
-                        <span className="text-[10px] text-slate-500 font-medium pr-1">MIC SENSITIVITY</span>
-                    </div>
-
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <div className="w-full h-2/3 px-12">
+                    {/* Canvas Container */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pt-10">
+                        <div className="w-full h-full px-4 md:px-12 pb-24">
                             <WaveVisualizer isConnected={isConnected} isSpeaking={isSpeaking} volume={volume} />
                         </div>
                     </div>
 
-                    {/* Controls */}
-                    <div className="absolute bottom-8 left-0 right-0 flex justify-center z-20">
+                    {/* Big Connect Button */}
+                    <div className="absolute bottom-8 left-0 right-0 flex justify-center z-30">
                         <button
                             onClick={toggleConnection}
                             className={`
-                                group relative flex items-center justify-center w-20 h-20 rounded-full transition-all duration-300 shadow-lg border-4
+                                group relative flex items-center justify-center w-20 h-20 rounded-2xl transition-all duration-500 shadow-[0_0_40px_rgba(0,0,0,0.3)]
                                 ${isConnected 
-                                    ? 'bg-rose-500 hover:bg-rose-600 border-rose-900/30 shadow-rose-900/20' 
-                                    : 'bg-sky-500 hover:bg-sky-600 border-sky-900/30 shadow-sky-900/20 animate-pulse-slow'}
+                                    ? 'bg-red-500/10 border-2 border-red-500/50 hover:bg-red-500/20' 
+                                    : 'bg-emerald-500 hover:bg-emerald-400 border-0 hover:scale-105 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)]'}
                             `}
                         >
                             {isConnected ? (
-                                <MicOff className="w-8 h-8 text-white" />
+                                <MicOff className="w-8 h-8 text-red-400 group-hover:scale-90 transition-transform" />
                             ) : (
-                                <PhoneCall className="w-8 h-8 text-white" />
+                                <PhoneCall className="w-8 h-8 text-white group-hover:scale-110 transition-transform" />
+                            )}
+                            
+                            {/* Ripple Effect for Call Button */}
+                            {!isConnected && (
+                                <span className="absolute inset-0 rounded-2xl border border-emerald-500/50 animate-ping-slow pointer-events-none" />
                             )}
                         </button>
                     </div>
                 </div>
 
-                {/* Lower Stats Row */}
-                <div className="h-48 grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6 flex flex-col justify-between">
-                         <div className="flex items-center justify-between">
-                             <div className="flex items-center gap-2 text-slate-400">
-                                 <Activity className="w-4 h-4" />
-                                 <span className="text-sm font-medium">System Load</span>
-                             </div>
-                             <span className="text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2 py-1 rounded">NORMAL</span>
-                         </div>
-                         <div className="mt-4">
-                             <div className="text-3xl font-bold text-white mb-1">98.2%</div>
-                             <div className="text-xs text-slate-500">Uptime guarantee met</div>
-                         </div>
-                     </div>
-                     
-                     <div className="bg-slate-900/50 border border-white/5 rounded-2xl p-6">
+                {/* Bottom Row: Charts & Transcript */}
+                <div className="flex-1 min-h-[250px] grid grid-cols-1 md:grid-cols-2 gap-6">
+                     <div className="bg-slate-900/40 border border-white/10 rounded-3xl p-6 backdrop-blur-sm overflow-hidden flex flex-col">
                         <DashboardCharts />
+                     </div>
+                     <div className="h-full">
+                        <Transcript messages={messages} />
                      </div>
                 </div>
             </div>
 
-            {/* Right Col: Info Panel */}
-            <div className="lg:col-span-4 h-full">
+            {/* RIGHT COLUMN: LEAD DATA */}
+            <div className="lg:col-span-4 h-full min-h-[600px]">
                 <InfoPanel lead={leadDetails} isConnected={isConnected} />
             </div>
         </div>
       </main>
+      
+      {/* Global CSS for animations */}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .animate-ping-slow { animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite; }
+      `}</style>
     </div>
   );
 };
