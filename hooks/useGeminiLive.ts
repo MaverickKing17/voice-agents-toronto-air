@@ -13,6 +13,7 @@ export const useGeminiLive = ({ onLeadCaptured }: UseGeminiLiveProps) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [volume, setVolume] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [micSensitivity, setMicSensitivity] = useState(0.8); // 0 to 1 range
 
   // Refs for audio handling to avoid re-renders
   const inputAudioContextRef = useRef<AudioContext | null>(null);
@@ -23,9 +24,15 @@ export const useGeminiLive = ({ onLeadCaptured }: UseGeminiLiveProps) => {
   const nextStartTimeRef = useRef<number>(0);
   const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const sessionPromiseRef = useRef<Promise<any> | null>(null);
+  const micSensitivityRef = useRef(micSensitivity);
   
   // Analyzer for visualization
   const analyzerRef = useRef<AnalyserNode | null>(null);
+
+  // Update ref when state changes
+  useEffect(() => {
+    micSensitivityRef.current = micSensitivity;
+  }, [micSensitivity]);
 
   const connect = useCallback(async () => {
     try {
@@ -80,6 +87,25 @@ export const useGeminiLive = ({ onLeadCaptured }: UseGeminiLiveProps) => {
                   
                   processorRef.current.onaudioprocess = (e) => {
                     const inputData = e.inputBuffer.getChannelData(0);
+                    
+                    // Noise Gate Logic
+                    let sum = 0;
+                    const len = inputData.length;
+                    for (let i = 0; i < len; i++) {
+                        sum += inputData[i] * inputData[i];
+                    }
+                    const rms = Math.sqrt(sum / len);
+                    
+                    // Threshold calculation: 
+                    // Sensitivity 1.0 (max) -> Threshold 0.0 (allow all)
+                    // Sensitivity 0.0 (min) -> Threshold 0.05 (block noise)
+                    const threshold = (1 - micSensitivityRef.current) * 0.05;
+
+                    if (rms < threshold) {
+                         // Silence the buffer if below threshold
+                         inputData.fill(0);
+                    }
+
                     const pcmBlob = createPcmBlob(inputData);
                     
                     if (sessionPromiseRef.current) {
@@ -232,5 +258,14 @@ export const useGeminiLive = ({ onLeadCaptured }: UseGeminiLiveProps) => {
     return () => cancelAnimationFrame(animationFrame);
   }, [isSpeaking]);
 
-  return { connect, disconnect, isConnected, isSpeaking, volume, error };
+  return { 
+    connect, 
+    disconnect, 
+    isConnected, 
+    isSpeaking, 
+    volume, 
+    error,
+    micSensitivity,
+    setMicSensitivity
+  };
 };

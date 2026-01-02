@@ -4,7 +4,7 @@ import { WaveVisualizer } from './components/WaveVisualizer';
 import { InfoPanel } from './components/InfoPanel';
 import { DashboardCharts } from './components/DashboardCharts';
 import { LeadDetails } from './types';
-import { Mic, MicOff, PhoneCall, AlertCircle, Snowflake, Flame, Activity } from 'lucide-react';
+import { Mic, MicOff, PhoneCall, AlertCircle, Snowflake, Flame, Activity, Sliders } from 'lucide-react';
 
 const App: React.FC = () => {
   const [leadDetails, setLeadDetails] = useState<Partial<LeadDetails>>({});
@@ -13,7 +13,16 @@ const App: React.FC = () => {
     setLeadDetails(prev => ({ ...prev, ...details }));
   };
 
-  const { connect, disconnect, isConnected, isSpeaking, volume, error } = useGeminiLive({
+  const { 
+    connect, 
+    disconnect, 
+    isConnected, 
+    isSpeaking, 
+    volume, 
+    error,
+    micSensitivity,
+    setMicSensitivity 
+  } = useGeminiLive({
     onLeadCaptured: handleLeadUpdate
   });
 
@@ -73,11 +82,30 @@ const App: React.FC = () => {
                 
                 {/* Visualizer Card */}
                 <div className="relative flex-1 bg-gradient-to-b from-slate-900 to-slate-900/50 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+                    {/* Status Indicator (Top Left) */}
                     <div className="absolute top-6 left-6 flex items-center gap-2 z-10">
                         <div className={`w-2 h-2 rounded-full ${isSpeaking ? 'bg-sky-400 animate-pulse' : 'bg-slate-600'}`} />
                         <span className="text-xs font-medium text-slate-400 tracking-widest uppercase">
                             {isConnected ? (isSpeaking ? 'Marcus Speaking...' : 'Listening') : 'Standby'}
                         </span>
+                    </div>
+
+                    {/* Mic Sensitivity Control (Top Right) */}
+                    <div className="absolute top-6 right-6 flex flex-col items-end gap-1 z-10">
+                        <div className="flex items-center gap-2 bg-slate-900/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
+                            <Sliders className="w-3 h-3 text-slate-400" />
+                            <input 
+                                type="range" 
+                                min="0" 
+                                max="1" 
+                                step="0.01"
+                                value={micSensitivity}
+                                onChange={(e) => setMicSensitivity(parseFloat(e.target.value))}
+                                className="w-20 h-1 bg-slate-700 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sky-400"
+                                title="Microphone Sensitivity"
+                            />
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-medium pr-1">MIC SENSITIVITY</span>
                     </div>
 
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
