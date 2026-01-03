@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Message } from '../types';
-import { Bot, User, Terminal, Sparkles, Cpu, ShieldCheck, UserCircle2, AlertTriangle } from 'lucide-react';
+import { Bot, User, Terminal, Sparkles, Cpu, ShieldCheck, UserCircle2, AlertTriangle, Hash } from 'lucide-react';
 
 interface TranscriptProps {
   messages: Message[];
@@ -21,8 +21,8 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages, persona }) => 
         return {
           label: 'INCOMING CALLER',
           icon: <User className="w-4 h-4" />,
-          avatarClass: 'bg-white text-slate-400 border border-slate-200',
-          contentClass: 'text-slate-600 font-medium bg-white border border-slate-200/50 p-6 rounded-2xl shadow-sm'
+          avatarClass: 'bg-white/5 text-white/40 border border-white/10',
+          contentClass: 'text-white/80 font-medium bg-white/5 border border-white/10 p-7 rounded-3xl backdrop-blur-md'
         };
       case 'agent':
         const isMike = persona === 'mike';
@@ -30,56 +30,69 @@ export const Transcript: React.FC<TranscriptProps> = ({ messages, persona }) => 
           label: isMike ? 'DISPATCH: MIKE' : 'ADVISOR: SARAH',
           icon: isMike ? <AlertTriangle className="w-4 h-4" /> : <UserCircle2 className="w-4 h-4" />,
           avatarClass: isMike 
-            ? 'bg-[#cc0000] text-white shadow-xl ring-4 ring-rose-100' 
-            : 'bg-[#003366] text-white shadow-xl ring-4 ring-blue-100',
+            ? 'bg-[#cc0000] text-white shadow-[0_0_20px_rgba(204,0,0,0.4)]' 
+            : 'bg-[#003366] text-white shadow-[0_0_20px_rgba(0,51,102,0.4)]',
           contentClass: isMike
-            ? 'text-slate-900 font-bold bg-rose-50 border border-rose-200 p-7 rounded-2xl shadow-lg border-l-8 border-l-[#cc0000]'
-            : 'text-slate-900 font-semibold bg-blue-50/50 border border-blue-200 p-7 rounded-2xl shadow-lg border-l-8 border-l-[#003366]'
+            ? 'text-white font-black bg-[#cc0000]/10 border border-[#cc0000]/20 p-8 rounded-[2rem] shadow-xl border-l-8 border-l-[#cc0000] relative overflow-hidden'
+            : 'text-white font-bold bg-[#003366]/20 border border-[#003366]/30 p-8 rounded-[2rem] shadow-xl border-l-8 border-l-[#0099cc] relative overflow-hidden'
         };
       case 'system':
         return {
-          label: 'CORE PROTOCOL',
-          icon: <Cpu className="w-3.5 h-3.5" />,
-          avatarClass: 'bg-slate-100 text-slate-400',
-          contentClass: 'text-slate-400 italic font-sans text-xs pl-4 border-l-2 border-slate-200'
+          label: 'SYSTEM KERNEL',
+          icon: <Hash className="w-3.5 h-3.5" />,
+          avatarClass: 'bg-white/5 text-white/20',
+          contentClass: 'text-white/30 italic font-mono text-[10px] pl-6 border-l-2 border-white/5 uppercase tracking-[0.2em] py-2'
         };
     }
   };
 
   return (
     <div className="h-full flex flex-col font-mono overflow-hidden">
-      <div className="flex-1 overflow-y-auto px-10 py-10 space-y-10 custom-scrollbar">
+      <div className="flex-1 overflow-y-auto px-12 py-12 space-y-12 custom-scrollbar">
         {messages.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center space-y-4 opacity-30">
-             <Terminal className="w-10 h-10 text-slate-300" />
-             <span className="text-[9px] font-black uppercase tracking-[0.6em] text-slate-400">Waiting for Link</span>
+          <div className="h-full flex flex-col items-center justify-center space-y-6 opacity-20">
+             <div className="relative">
+                <Terminal className="w-14 h-14 text-white" />
+                <div className="absolute inset-0 animate-ping opacity-50"><Terminal className="w-14 h-14 text-white" /></div>
+             </div>
+             <span className="text-[11px] font-black uppercase tracking-[0.8em] text-white">Standby for Link</span>
           </div>
         )}
         
         {messages.map((msg) => {
           const config = getRoleConfig(msg.role);
+          const isAgent = msg.role === 'agent';
 
           return (
-            <div key={msg.id} className="flex gap-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <div className="flex flex-col items-center gap-3 pt-1">
-                 <div className={`flex items-center justify-center w-9 h-9 rounded-xl shadow-sm ${config.avatarClass}`}>
+            <div key={msg.id} className="flex gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <div className="flex flex-col items-center pt-1 shrink-0">
+                 <div className={`flex items-center justify-center w-11 h-11 rounded-2xl ${config.avatarClass}`}>
                    {config.icon}
                  </div>
               </div>
               
-              <div className="flex-1 pb-2">
-                <div className="flex items-center justify-between mb-3">
-                   <div className="flex items-center gap-3">
-                      <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${msg.role === 'agent' ? (persona === 'mike' ? 'text-rose-600' : 'text-[#003366]') : 'text-slate-400'}`}>
+              <div className="flex-1 pb-4">
+                <div className="flex items-center justify-between mb-4">
+                   <div className="flex items-center gap-4">
+                      <span className={`text-[10px] font-black uppercase tracking-[0.3em] ${msg.role === 'agent' ? (persona === 'mike' ? 'text-rose-500' : 'text-[#00ccff]') : 'text-white/30'}`}>
                         {config.label}
                       </span>
+                      {isAgent && (
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-md border border-white/5">
+                           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                           <span className="text-[8px] font-black text-white/40 uppercase tracking-widest">Live Voice Output</span>
+                        </div>
+                      )}
                    </div>
-                   <span className="text-[9px] text-slate-300 font-bold uppercase tracking-widest italic">
-                     {new Date(msg.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })}
+                   <span className="text-[10px] text-white/10 font-black uppercase tracking-widest">
+                     {new Date(msg.timestamp).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                    </span>
                 </div>
                 
-                <div className={`text-[17px] leading-[1.7] transition-all duration-500 ${config.contentClass}`}>
+                <div className={`text-[19px] leading-[1.6] transition-all duration-700 shadow-2xl ${config.contentClass}`}>
+                  {isAgent && (
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none" />
+                  )}
                   {msg.text}
                 </div>
               </div>

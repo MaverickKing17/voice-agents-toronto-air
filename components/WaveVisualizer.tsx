@@ -37,23 +37,25 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
             ctx.lineTo(w, h/2);
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
             ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
             ctx.stroke();
+            ctx.setLineDash([]);
             return;
         }
 
-        offset += isEmergency ? 8 : 4;
+        offset += isEmergency ? 10 : 5;
         const midY = h / 2;
         const volScale = (volume / 255);
 
-        const drawWave = (color: string, speed: number, amplitude: number, lineWidth: number, opacity: number) => {
+        const drawWave = (color: string, speed: number, amplitude: number, lineWidth: number, opacity: number, frequencyShift: number = 0) => {
           ctx.beginPath();
           ctx.strokeStyle = color;
           ctx.lineWidth = lineWidth;
           ctx.globalAlpha = opacity;
           
           for (let x = 0; x < w; x++) {
-            const freq = (isEmergency ? 0.02 : 0.01) + (volScale * 0.03);
-            const y = midY + Math.sin((x + offset * speed) * freq) * (amplitude + (volScale * 140));
+            const freq = (isEmergency ? 0.025 : 0.012) + (volScale * 0.04) + frequencyShift;
+            const y = midY + Math.sin((x + offset * speed) * freq) * (amplitude + (volScale * 180));
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
           }
@@ -61,17 +63,30 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
           ctx.globalAlpha = 1;
         };
 
-        const primaryColor = isEmergency ? '#cc0000' : '#0099cc';
-        const secondaryColor = isEmergency ? '#ff4444' : '#ffffff';
+        const primaryColor = isEmergency ? '#ff3333' : '#00ccff';
+        const secondaryColor = isEmergency ? '#ffffff' : '#ffffff';
         const baseColor = isEmergency ? '#800000' : '#003366';
 
-        drawWave(primaryColor, 1, isEmergency ? 20 : 10, 2.5, 0.8);
-        drawWave(secondaryColor, 1.5, 5, 1, 0.2);
-        drawWave(baseColor, 0.5, 15, 5, 0.3);
+        // High frequency noise layer
+        drawWave(secondaryColor, 3, 2, 0.5, 0.1, 0.1);
+        
+        // Dynamic main waves
+        drawWave(primaryColor, 1.2, isEmergency ? 30 : 15, 3, 0.9);
+        drawWave(secondaryColor, 2, 8, 1, 0.3);
+        drawWave(baseColor, 0.8, 20, 6, 0.2);
 
+        // Oscilloscope scanning effect
         if (isSpeaking) {
-          const coreGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 120 + volScale * 240);
-          coreGrad.addColorStop(0, isEmergency ? 'rgba(204, 0, 0, 0.1)' : 'rgba(0, 153, 204, 0.08)');
+          const scanX = (offset * 2) % w;
+          ctx.beginPath();
+          ctx.moveTo(scanX, 0);
+          ctx.lineTo(scanX, h);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + volScale * 0.3})`;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          const coreGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 150 + volScale * 300);
+          coreGrad.addColorStop(0, isEmergency ? 'rgba(255, 51, 51, 0.12)' : 'rgba(0, 204, 255, 0.1)');
           coreGrad.addColorStop(1, 'transparent');
           ctx.fillStyle = coreGrad;
           ctx.fillRect(0, 0, w, h);
