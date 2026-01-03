@@ -19,7 +19,9 @@ import {
   Zap,
   ChevronRight,
   ShieldAlert,
-  Cpu
+  Cpu,
+  Signal,
+  Wifi
 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -95,14 +97,31 @@ const App: React.FC = () => {
                 <h1 className="text-2xl font-black tracking-tighter text-white uppercase italic leading-none flex items-center gap-3">
                     Toronto Air <span className={`${isEmergency ? 'text-rose-500' : 'text-blue-400'} font-black tracking-normal not-italic`}>Systems</span>
                 </h1>
-                <div className="flex items-center gap-3 mt-2">
-                   <div className={`flex items-center gap-3 px-3 py-1 rounded border text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
-                     isConnected ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' : 'bg-white/5 border-white/10 text-white/30'
+                
+                {/* HIGH VISIBILITY STATUS MODULE */}
+                <div className="flex items-center gap-4 mt-2.5">
+                   <div className={`flex items-center gap-3 px-4 py-1.5 rounded-lg border-2 transition-all duration-700 ${
+                     isConnected 
+                      ? 'bg-emerald-500/20 border-emerald-400/60 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.4)]' 
+                      : 'bg-white/[0.03] border-white/10 text-white/40'
                    }`}>
-                      <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-white/20'}`} />
-                      {isConnected ? 'LIVE SIGNAL' : 'STANDBY'}
+                      <div className="relative flex items-center justify-center">
+                        {isConnected && <div className="absolute inset-0 w-3 h-3 rounded-full bg-emerald-400 animate-ping opacity-50" />}
+                        <div className={`w-2.5 h-2.5 rounded-full transition-colors duration-500 ${isConnected ? 'bg-emerald-400' : 'bg-white/20'}`} />
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-[0.25em]">
+                        {isConnected ? 'LIVE SIGNAL' : 'STANDBY'}
+                      </span>
                    </div>
-                   <span className="text-[10px] font-mono font-bold text-white/20 tracking-[0.3em]">UPLINK: ALPHA-01-COMM</span>
+                   
+                   <div className="flex items-center gap-3 px-2">
+                      <Signal className={`w-4 h-4 transition-colors ${isConnected ? (isEmergency ? 'text-rose-500' : 'text-blue-500') : 'text-white/10'}`} />
+                      <span className={`text-[11px] font-mono font-black tracking-[0.35em] transition-all duration-1000 ${
+                        isConnected ? 'text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]' : 'text-white/20'
+                      }`}>
+                        UPLINK: ALPHA-01-COMM
+                      </span>
+                   </div>
                 </div>
               </div>
            </div>
