@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -6,16 +7,36 @@
     <title>Toronto Air Systems - Marcus AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
+      
       body {
         font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
       }
+
+      .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+
       .animate-pulse-slow {
-        animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
       }
+
       @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: .7; }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(0.98); }
+      }
+
+      /* Custom selection color */
+      ::selection {
+        background: rgba(59, 130, 246, 0.3);
+        color: white;
+      }
+
+      /* Hide scrollbar by default for a cleaner look */
+      ::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
       }
     </style>
   <script type="importmap">
@@ -33,7 +54,7 @@
 }
 </script>
 </head>
-  <body class="bg-slate-950">
+  <body class="bg-slate-950 text-slate-200">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
