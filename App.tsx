@@ -77,7 +77,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-1000 font-sans selection:bg-blue-500/30 overflow-hidden relative ${isEmergency ? 'bg-[#050000]' : 'bg-[#00050a]'}`}>
+    <div className={`h-screen flex flex-col transition-all duration-1000 font-sans selection:bg-blue-500/30 overflow-hidden relative ${isEmergency ? 'bg-[#050000]' : 'bg-[#00050a]'}`}>
       
       {/* Background Cinematic Atmosphere */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -89,7 +89,7 @@ const App: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/[0.02] to-transparent h-24 w-full animate-scan pointer-events-none" />
       </div>
 
-      <header className="fixed top-0 left-0 right-0 z-50 h-20 border-b border-white/5 bg-black/40 backdrop-blur-3xl px-8 flex items-center justify-between shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+      <header className="h-20 border-b border-white/5 bg-black/40 backdrop-blur-3xl px-8 flex items-center justify-between shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-50 shrink-0">
         <div className="flex items-center gap-8">
            <div className="flex items-center gap-4 pr-8 border-r border-white/10">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-2xl transition-all duration-700 relative overflow-hidden group ${isEmergency ? 'bg-rose-600 scale-110' : 'bg-blue-700'}`}>
@@ -112,7 +112,7 @@ const App: React.FC = () => {
               </div>
            </div>
            
-           {/* INTERACTIVE AGENT SWITCHER - High Fidelity Toggle */}
+           {/* High Fidelity Agent Switcher */}
            <div className="flex items-center gap-1 bg-white/5 p-1 rounded-2xl border border-white/10 shadow-inner">
               <button 
                 onClick={() => togglePersona('sarah')}
@@ -189,12 +189,12 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="pt-20 h-screen flex relative z-10">
+      <main className="flex-1 flex overflow-hidden relative z-10">
         
-        {/* Communication Hub */}
-        <section className="flex-1 flex flex-col bg-black/40 backdrop-blur-sm border-r border-white/5">
+        {/* Core Communication Hub */}
+        <section className="flex-1 flex flex-col bg-black/40 backdrop-blur-sm border-r border-white/5 overflow-hidden">
             
-            {/* Audio Visualization - Cinematic Field */}
+            {/* Audio Visualization Field */}
             <div className={`h-[45%] relative flex items-center justify-center overflow-hidden border-b border-white/5 transition-all duration-1000 ${isEmergency ? 'bg-rose-950/10' : 'bg-blue-950/10'}`}>
                 {/* Visualizer Grid Decoration */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, backgroundSize: '60px 60px' }} />
@@ -227,7 +227,7 @@ const App: React.FC = () => {
             </div>
             
             {/* Command Ticker */}
-            <footer className="h-10 bg-black/60 border-t border-white/5 flex items-center overflow-hidden">
+            <footer className="h-10 bg-black/60 border-t border-white/5 flex items-center overflow-hidden shrink-0">
                <div className="flex items-center gap-12 animate-marquee whitespace-nowrap px-8">
                   <TickerItem label="MISSISSAUGA" status="Optimal" />
                   <TickerItem label="BRAMPTON" status="Emergency Units Deployed" />
@@ -239,37 +239,10 @@ const App: React.FC = () => {
             </footer>
         </section>
 
-        {/* Lead Intelligence Terminal - REPOSITIONED AND REFINED */}
-        <aside className="w-[520px] flex flex-col bg-[#fcfdfe] z-20 overflow-hidden shadow-[-10px_0_50px_rgba(0,0,0,0.4)] border-l border-slate-200">
+        {/* Intelligence Side-Terminal - INTEGRATED & STABLE */}
+        <aside className="w-[460px] flex-shrink-0 flex flex-col bg-[#fcfdfe] z-20 overflow-hidden shadow-[-15px_0_50px_rgba(0,0,0,0.4)] border-l border-slate-200">
             <div className="flex-1 overflow-y-auto custom-scrollbar">
                 <InfoPanel lead={leadDetails} isConnected={isConnected} />
-                
-                {/* Secondary HUD Analytics Widget */}
-                <div className="px-8 pb-12 pt-0">
-                   <div className="p-8 bg-slate-950 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-                      <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-transparent opacity-100" />
-                      <div className="relative z-10">
-                        <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
-                           <div>
-                              <div className="text-[8px] font-black text-blue-500 uppercase tracking-[0.5em] mb-1">Fleet Dynamics</div>
-                              <h4 className="text-lg font-black text-white italic tracking-tighter uppercase leading-none">Regional Context</h4>
-                           </div>
-                           <Navigation className="w-5 h-5 text-white/20" />
-                        </div>
-                        
-                        <div className="grid grid-cols-2 gap-4">
-                           <div className="bg-white/[0.03] p-5 rounded-2xl border border-white/5 backdrop-blur-md">
-                              <div className="text-[7px] font-black text-white/30 uppercase tracking-widest mb-2">Dispatcher ETA</div>
-                              <div className="text-2xl font-black text-white font-mono tracking-tighter italic">38m <span className="text-[9px] text-emerald-400 not-italic tracking-normal font-bold">ALPHA</span></div>
-                           </div>
-                           <div className="bg-white/[0.03] p-5 rounded-2xl border border-white/5 backdrop-blur-md">
-                              <div className="text-[7px] font-black text-white/30 uppercase tracking-widest mb-2">Active Nodes</div>
-                              <div className="text-2xl font-black text-white font-mono tracking-tighter italic">14 <span className="text-[9px] text-blue-400 not-italic tracking-normal font-bold">STABLE</span></div>
-                           </div>
-                        </div>
-                      </div>
-                   </div>
-                </div>
             </div>
         </aside>
 
