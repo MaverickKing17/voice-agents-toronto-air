@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { LeadDetails } from '../types';
-import { ShieldCheck, User, Phone, MapPin, Zap, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, User, Phone, MapPin, Search } from 'lucide-react';
 
 interface InfoPanelProps {
   lead: Partial<LeadDetails>;
@@ -10,80 +10,94 @@ interface InfoPanelProps {
 
 export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
   return (
-    <div className="h-full flex flex-col p-12 relative overflow-hidden">
+    <div className="h-full flex flex-col p-10 relative overflow-hidden">
       
-      <div className="mb-12">
-        <h3 className="text-xs font-black text-sky-500 uppercase tracking-[0.3em] mb-2">Lead Processing</h3>
-        <h2 className="text-3xl font-black text-white italic tracking-tighter uppercase leading-none">
-            Intelligence <br/> Unit
+      <div className="mb-10">
+        <div className="flex items-center gap-2 mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]" />
+            <h3 className="text-[10px] font-black text-blue-500 uppercase tracking-[0.4em]">Data Acquisition</h3>
+        </div>
+        <h2 className="text-2xl font-black text-white tracking-tighter uppercase leading-none italic">
+            Lead Analysis
         </h2>
       </div>
 
-      <div className="space-y-6 flex-1">
-        <DataRow 
-          label="Customer Name" 
+      <div className="space-y-1 flex-1">
+        <LeadField 
+          label="Subject Identity" 
           value={lead.name} 
-          icon={<User className="w-5 h-5" />} 
-          verified={!!lead.name}
+          icon={<User className="w-4 h-4" />} 
+          active={isConnected}
         />
-        <DataRow 
-          label="Contact Number" 
+        <LeadField 
+          label="Contact Link" 
           value={lead.phone} 
-          icon={<Phone className="w-5 h-5" />} 
-          verified={!!lead.phone}
+          icon={<Phone className="w-4 h-4" />} 
+          active={isConnected}
         />
-        <DataRow 
-          label="Service Address" 
+        <LeadField 
+          label="Sector Address" 
           value={lead.address} 
-          icon={<MapPin className="w-5 h-5" />} 
-          verified={!!lead.address}
+          icon={<MapPin className="w-4 h-4" />} 
+          active={isConnected}
         />
 
-        <div className="pt-4 grid grid-cols-1 gap-4">
-             <div className={`p-6 rounded-3xl border transition-all duration-700 ${lead.type ? 'bg-sky-500/5 border-sky-500/30' : 'bg-white/[0.02] border-white/5'}`}>
-                <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Inquiry Type</div>
-                <div className="text-xl font-black text-white uppercase tracking-tighter">
-                  {lead.type || <span className="text-slate-800 italic">Waiting...</span>}
+        <div className="pt-6 grid grid-cols-2 gap-3">
+             <div className={`p-5 rounded-lg border transition-all duration-500 ${lead.type ? 'bg-blue-600/10 border-blue-500/30' : 'bg-white/[0.01] border-white/5'}`}>
+                <div className="text-[8px] text-slate-600 uppercase font-black tracking-widest mb-1.5">Inquiry Class</div>
+                <div className={`text-xs font-black uppercase tracking-tight ${lead.type === 'emergency' ? 'text-rose-400' : 'text-slate-400'}`}>
+                  {lead.type || (isConnected ? 'SCANNING...' : 'PENDING')}
                 </div>
              </div>
              
-             <div className={`p-6 rounded-3xl border transition-all duration-700 ${lead.heatingSource ? 'bg-indigo-500/5 border-indigo-500/30' : 'bg-white/[0.02] border-white/5'}`}>
-                <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Heating System</div>
-                <div className="text-xl font-black text-white uppercase tracking-tighter">
-                  {lead.heatingSource || <span className="text-slate-800 italic">Detecting...</span>}
+             <div className={`p-5 rounded-lg border transition-all duration-500 ${lead.heatingSource ? 'bg-blue-600/10 border-blue-500/30' : 'bg-white/[0.01] border-white/5'}`}>
+                <div className="text-[8px] text-slate-600 uppercase font-black tracking-widest mb-1.5">Thermal Unit</div>
+                <div className="text-xs font-black text-slate-400 uppercase tracking-tight">
+                  {lead.heatingSource || (isConnected ? 'DETECTING...' : 'PENDING')}
                 </div>
              </div>
         </div>
       </div>
 
-      {/* Rebate Highlight */}
-      <div className="mt-12 p-8 bg-sky-500 border border-sky-400 rounded-3xl shadow-[0_20px_40px_rgba(14,165,233,0.3)]">
-        <div className="text-[10px] font-black text-sky-100 uppercase tracking-[0.2em] mb-2">Estimated 2026 Rebate</div>
-        <div className="text-5xl font-black text-white tracking-tighter">$7,500</div>
-        <div className="mt-4 flex items-center gap-2 text-sky-100 text-[10px] font-bold uppercase">
-            <ShieldCheck className="w-4 h-4" />
-            HRS Program Qualified
+      {/* High-Fi Rebate Card */}
+      <div className="mt-8 bg-gradient-to-br from-blue-700 to-blue-900 p-6 rounded-xl relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+        <div className="relative z-10">
+            <div className="flex items-center justify-between mb-4">
+                <span className="text-[9px] font-black text-blue-200 uppercase tracking-widest">2026 HRS Incentive</span>
+                <ShieldCheck className="w-4 h-4 text-blue-200 opacity-50" />
+            </div>
+            <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-white tracking-tighter">$7,500</span>
+                <span className="text-[10px] text-blue-200 font-bold uppercase tracking-widest opacity-60">Verified</span>
+            </div>
+            <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
+                <span className="text-[8px] font-bold text-blue-100/60 uppercase">Primary Heat: {lead.heatingSource || 'Electric'}</span>
+                <div className="flex gap-1">
+                    {[1,2,3,4].map(i => <div key={i} className="w-1 h-1 rounded-full bg-white/20" />)}
+                </div>
+            </div>
         </div>
       </div>
     </div>
   );
 };
 
-const DataRow = ({ label, value, icon, verified }: { label: string, value?: string, icon: React.ReactNode, verified: boolean }) => (
-    <div className={`flex items-center justify-between py-4 border-b transition-all duration-500 ${verified ? 'border-sky-500/30' : 'border-white/5'}`}>
-        <div className="flex items-center gap-6">
-            <div className={`${verified ? 'text-sky-400' : 'text-slate-700'}`}>
+const LeadField = ({ label, value, icon, active }: { label: string, value?: string, icon: React.ReactNode, active: boolean }) => (
+    <div className={`group flex items-center justify-between py-4 transition-all duration-500 border-b border-white/5`}>
+        <div className="flex items-center gap-5">
+            <div className={`transition-colors ${value ? 'text-blue-500' : 'text-slate-800'}`}>
                 {icon}
             </div>
             <div className="flex flex-col">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-0.5">{label}</span>
-              <span className={`text-lg font-bold transition-all ${verified ? 'text-white' : 'text-slate-800 italic'}`}>
-                  {value || 'Awaiting input...'}
+              <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.2em] mb-0.5">{label}</span>
+              <span className={`text-[13px] font-bold transition-all ${value ? 'text-white' : active ? 'text-slate-700 animate-pulse-slow' : 'text-slate-800'}`}>
+                  {value || (active ? 'Listening...' : 'Inactive')}
               </span>
             </div>
         </div>
-        {verified && (
-          <CheckCircle2 className="w-6 h-6 text-emerald-400 animate-in zoom-in" />
+        {value && (
+          <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
         )}
     </div>
 );
