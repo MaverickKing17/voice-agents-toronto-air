@@ -14,6 +14,7 @@ export interface LeadDetails {
   agentPersona: 'sarah' | 'marcus';
   marketType: 'residential' | 'commercial';
   status: 'collecting' | 'complete';
+  isEscalated?: boolean;
 }
 
 export interface ServiceMetric {

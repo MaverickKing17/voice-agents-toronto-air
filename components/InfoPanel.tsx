@@ -14,7 +14,9 @@ import {
   Building2,
   Navigation,
   FileText,
-  RefreshCw
+  RefreshCw,
+  AlertOctagon,
+  Siren
 } from 'lucide-react';
 
 interface InfoPanelProps {
@@ -27,7 +29,7 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
   const isHeritage = lead.address?.toLowerCase().includes('heritage') || 
                      lead.heatingSource === 'oil';
   const isMarcus = lead.agentPersona === 'marcus';
-  const isEmergency = isMarcus || lead.type === 'emergency';
+  const isEmergency = isMarcus || lead.type === 'emergency' || lead.isEscalated;
   const isCommercial = lead.marketType === 'commercial';
 
   useEffect(() => {
@@ -67,6 +69,20 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
       </div>
 
       <div className={`p-10 space-y-12 transition-all duration-700 ${isRefreshing ? 'blur-[8px] opacity-40 grayscale scale-95' : 'blur-0 opacity-100 grayscale-0 scale-100'}`}>
+        
+        {/* Emergency Escalation Alert */}
+        {lead.isEscalated && (
+          <div className="bg-rose-600 text-white p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(225,29,72,0.4)] border-4 border-rose-400 animate-in zoom-in-95 duration-500 flex items-center gap-8">
+             <div className="bg-white/20 p-4 rounded-3xl animate-pulse">
+                <Siren className="w-10 h-10 text-white" />
+             </div>
+             <div className="flex flex-col">
+                <span className="text-[14px] font-black uppercase tracking-[0.4em] mb-1">TECH ESCALATION ACTIVE</span>
+                <span className="text-2xl font-black tracking-tight leading-none uppercase italic">Dispatching On-Call Lead</span>
+             </div>
+          </div>
+        )}
+
         {/* Status Badges */}
         <div className="flex flex-wrap gap-4">
           <div className={`px-6 py-3 rounded-2xl flex items-center gap-4 border-2 transition-all shadow-xl ${isCommercial ? 'bg-slate-950 border-slate-900 text-white' : 'bg-slate-100 border-slate-300 text-slate-950'}`}>
@@ -77,6 +93,12 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
             <div className="px-6 py-3 bg-amber-500 text-white rounded-2xl flex items-center gap-4 border-2 border-amber-400 shadow-xl">
               <ShieldCheck className="w-6 h-6" />
               <span className="text-[13px] font-black uppercase tracking-widest">HERITAGE ASSET</span>
+            </div>
+          )}
+          {lead.type === 'emergency' && (
+            <div className="px-6 py-3 bg-rose-600 text-white rounded-2xl flex items-center gap-4 border-2 border-rose-400 shadow-xl animate-pulse">
+              <AlertOctagon className="w-6 h-6" />
+              <span className="text-[13px] font-black uppercase tracking-widest">SAFETY PRIORITY</span>
             </div>
           )}
         </div>
@@ -132,7 +154,7 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
                         <div className="flex items-center gap-5">
                            <CheckCircle2 className={`w-8 h-8 ${isEmergency ? 'text-rose-400' : 'text-emerald-400'} animate-pulse`} />
                            <span className="text-2xl font-black text-white uppercase tracking-tight">
-                              {isMarcus ? 'PRIORITY 1' : 'READY TO BOOK'}
+                              {lead.isEscalated ? 'IN TRANSIT' : lead.status === 'complete' ? 'BOOKED' : 'READY TO DEPLOY'}
                            </span>
                         </div>
                       </div>
@@ -144,7 +166,7 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({ lead, isConnected }) => {
                     ? 'bg-rose-600 border-rose-400 text-white hover:bg-rose-500 shadow-rose-900/40' 
                     : 'bg-white border-white text-slate-950 hover:bg-slate-50 shadow-blue-900/10'
                   }`}>
-                    DECOUPLE DISPATCH <ArrowRight className="w-8 h-8" />
+                    {lead.isEscalated ? 'NOTIFY TECH AGAIN' : 'CONFIRM DISPATCH'} <ArrowRight className="w-8 h-8" />
                   </button>
               </div>
           </div>

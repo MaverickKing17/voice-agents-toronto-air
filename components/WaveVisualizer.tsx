@@ -43,9 +43,10 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
             return;
         }
 
-        offset += isEmergency ? 10 : 5;
+        // Ambient movement even if not speaking
+        offset += isEmergency ? 8 : 4;
         const midY = h / 2;
-        const volScale = (volume / 255);
+        const volScale = isSpeaking ? (volume / 255) : 0.05;
 
         const drawWave = (color: string, speed: number, amplitude: number, lineWidth: number, opacity: number, frequencyShift: number = 0) => {
           ctx.beginPath();
@@ -63,34 +64,26 @@ export const WaveVisualizer: React.FC<WaveVisualizerProps> = ({ isConnected, isS
           ctx.globalAlpha = 1;
         };
 
-        const primaryColor = isEmergency ? '#ff3333' : '#00ccff';
+        const primaryColor = isEmergency ? '#ff3333' : '#3b82f6';
         const secondaryColor = isEmergency ? '#ffffff' : '#ffffff';
-        const baseColor = isEmergency ? '#800000' : '#003366';
+        const baseColor = isEmergency ? '#800000' : '#1e3a8a';
 
-        // High frequency noise layer
+        // Noise layer
         drawWave(secondaryColor, 3, 2, 0.5, 0.1, 0.1);
         
         // Dynamic main waves
-        drawWave(primaryColor, 1.2, isEmergency ? 30 : 15, 3, 0.9);
-        drawWave(secondaryColor, 2, 8, 1, 0.3);
-        drawWave(baseColor, 0.8, 20, 6, 0.2);
+        drawWave(primaryColor, 1.2, isEmergency ? 30 : 15, 3, 0.8);
+        drawWave(secondaryColor, 2, 8, 1, 0.2);
+        drawWave(baseColor, 0.8, 20, 6, 0.15);
 
-        // Oscilloscope scanning effect
-        if (isSpeaking) {
-          const scanX = (offset * 2) % w;
-          ctx.beginPath();
-          ctx.moveTo(scanX, 0);
-          ctx.lineTo(scanX, h);
-          ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + volScale * 0.3})`;
-          ctx.lineWidth = 2;
-          ctx.stroke();
-
-          const coreGrad = ctx.createRadialGradient(w/2, h/2, 0, w/2, h/2, 150 + volScale * 300);
-          coreGrad.addColorStop(0, isEmergency ? 'rgba(255, 51, 51, 0.12)' : 'rgba(0, 204, 255, 0.1)');
-          coreGrad.addColorStop(1, 'transparent');
-          ctx.fillStyle = coreGrad;
-          ctx.fillRect(0, 0, w, h);
-        }
+        // Scanline
+        const scanX = (offset * 2) % w;
+        ctx.beginPath();
+        ctx.moveTo(scanX, 0);
+        ctx.lineTo(scanX, h);
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.05 + volScale * 0.2})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
         animationFrameId = requestAnimationFrame(render);
     };
