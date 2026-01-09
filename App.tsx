@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   ChevronRight, 
@@ -16,7 +17,7 @@ import {
   Zap,
   Building2,
   PhoneCall,
-  Clock,
+  Activity,
   Facebook,
   Twitter,
   Instagram,
@@ -27,7 +28,7 @@ const App: React.FC = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Smooth scroll helper to make links "work"
+  // Smooth scroll helper to ensure all buttons and links work within the landing page
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -46,24 +47,23 @@ const App: React.FC = () => {
     scrollToSection(target);
   };
 
-  // Fix: Added missing toggleFaq function to handle accordion item expansion and collapse
   const toggleFaq = (index: number) => {
     setActiveFaq(prev => prev === index ? null : index);
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-800 font-sans selection:bg-red-100 selection:text-red-600">
+    <div className="min-h-screen bg-white text-gray-800 font-sans selection:bg-red-100 selection:text-red-600 overflow-x-hidden">
       {/* Top Bar Navigation */}
       <div className="bg-[#f8f9fa] border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 h-10 flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-widest">
           <div className="flex gap-6">
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-[#003366] transition-colors">Home</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-[#003366] transition-colors">Commercial</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-[#003366] transition-colors">Careers</a>
-            <a href="#" onClick={(e) => e.preventDefault()} className="hover:text-[#003366] transition-colors">News & Articles</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="hover:text-[#003366] transition-colors">Home</a>
+            <a href="#cooling" onClick={(e) => handleLinkClick(e, 'cooling')} className="hover:text-[#003366] transition-colors">Commercial</a>
+            <a href="#why-choose" onClick={(e) => handleLinkClick(e, 'why-choose')} className="hover:text-[#003366] transition-colors">Careers</a>
+            <a href="#steps" onClick={(e) => handleLinkClick(e, 'steps')} className="hover:text-[#003366] transition-colors">News & Articles</a>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 cursor-pointer hover:text-red-600 transition-colors">
+            <div className="flex items-center gap-2 cursor-pointer hover:text-red-600 transition-colors" onClick={() => alert("Search feature: coming soon!")}>
               <Search className="w-3.5 h-3.5" />
               <span>Search</span>
             </div>
@@ -99,10 +99,10 @@ const App: React.FC = () => {
             <div className="group relative cursor-pointer flex items-center gap-1 hover:text-[#d6001c] transition-colors" onClick={(e) => handleLinkClick(e, 'cooling')}>
               Cooling <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform" />
             </div>
-            <a href="#other" onClick={(e) => e.preventDefault()} className="hover:text-[#d6001c] transition-colors">Other Services</a>
+            <a href="#other" onClick={(e) => handleLinkClick(e, 'heating')} className="hover:text-[#d6001c] transition-colors">Other Services</a>
             <a href="#about" onClick={(e) => handleLinkClick(e, 'why-choose')} className="hover:text-[#d6001c] transition-colors">About Us</a>
             <a href="#contact" onClick={(e) => handleLinkClick(e, 'footer')} className="hover:text-[#d6001c] transition-colors">Contact</a>
-            <a href="#rebates" onClick={(e) => e.preventDefault()} className="hover:text-[#d6001c] transition-colors text-[#d6001c]">Rebates</a>
+            <a href="#rebates" onClick={(e) => alert("Rebates section is under construction. Please call for info.")} className="hover:text-[#d6001c] transition-colors text-[#d6001c]">Rebates</a>
           </nav>
 
           <div className="flex items-center gap-5 border-l border-gray-200 pl-8">
@@ -120,8 +120,8 @@ const App: React.FC = () => {
       {/* Hero Section */}
       <section className="relative h-[650px] overflow-hidden flex items-center">
         <img 
-          src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=2069&auto=format&fit=crop" 
-          alt="HVAC installation professional" 
+          src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?q=80&w=2000&auto=format&fit=crop" 
+          alt="HVAC technician at work" 
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#001529]/90 via-[#001529]/60 to-transparent" />
@@ -133,7 +133,7 @@ const App: React.FC = () => {
               The Gold Standard <br/>in HVAC Services <br/><span className="text-white/80 not-italic">in Toronto</span>
             </h2>
             <p className="text-xl text-white/70 max-w-xl font-medium tracking-tight">
-              From historic heritage homes to modern skyscrapers, we deliver climate perfection with 24/7 priority support.
+              Specializing in complex furnace and AC systems for Greater Toronto's heritage properties and modern developments.
             </p>
           </div>
           
@@ -228,7 +228,7 @@ const App: React.FC = () => {
             <ServiceItem icon={<Snowflake />} title="New AC Install" />
             <ServiceItem icon={<Wind />} title="Chillers" />
           </div>
-          <div className="flex justify-center mt-16 pt-8 border-t border-gray-200">
+          <div className="flex justify-center mt-16 pt-8 border-t border-gray-200" onClick={(e) => handleLinkClick(e, 'cooling')}>
             <ServiceItem icon={<Building2 className="w-10 h-10 text-[#003366] mx-auto" />} title="Commercial HVAC" />
           </div>
         </div>
@@ -246,7 +246,7 @@ const App: React.FC = () => {
              "BOSCH", "Panasonic", "GREE", "MITSUBISHI",
              "INFRATECH", "BROMIC", "LG", "Dimplex"
            ].map((brand, i) => (
-             <div key={i} className="h-36 flex items-center justify-center p-10 border border-gray-50 grayscale hover:grayscale-0 transition-all cursor-pointer bg-white group">
+             <div key={i} className="h-36 flex items-center justify-center p-10 border border-gray-50 grayscale hover:grayscale-0 transition-all cursor-pointer bg-white group" onClick={() => alert(`${brand} Authorized Service: Ready.`)}>
                 <span className="text-2xl font-black tracking-tighter uppercase italic text-gray-400 group-hover:text-[#003366] transition-colors">{brand}</span>
              </div>
            ))}
@@ -276,7 +276,7 @@ const App: React.FC = () => {
                    Integration Slot: Vapi AI Embed
                 </div>
                 <button 
-                  onClick={() => alert("Vapi AI Assistant: Ready for Embed Hook.")}
+                  onClick={() => alert("Vapi AI Assistant: Redirecting to voice gateway...")}
                   className="bg-red-600 text-white px-14 py-6 rounded-3xl font-black text-lg uppercase tracking-widest hover:bg-red-700 transition-all shadow-2xl shadow-red-900/40"
                 >
                   Start Live Demo Call
@@ -311,8 +311,8 @@ const App: React.FC = () => {
                <div className="absolute inset-0 bg-red-600 rounded-[3rem] rotate-3 transition-transform group-hover:rotate-6 -z-10" />
                <div className="h-[650px] rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white/10 bg-[#003366]">
                   <img 
-                    src="https://images.unsplash.com/photo-1599806112354-67f8b5425a06?q=80&w=800&auto=format&fit=crop" 
-                    alt="HVAC work in progress" 
+                    src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=800&auto=format&fit=crop" 
+                    alt="HVAC technician installing unit" 
                     className="w-full h-full object-cover mix-blend-overlay opacity-80"
                   />
                   <div className="absolute bottom-12 left-12 right-12 bg-white/10 backdrop-blur-xl p-10 rounded-[2rem] border border-white/20">
@@ -332,9 +332,7 @@ const App: React.FC = () => {
               <div className="flex-1 relative order-2 lg:order-1">
                  <div className="relative z-10 transform lg:scale-125">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Map_of_the_Greater_Toronto_Area.svg/800px-Map_of_the_Greater_Toronto_Area.svg.png" alt="GTA Coverage Map" className="w-full h-auto opacity-10 grayscale" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                       <h2 className="text-[140px] font-black text-gray-100 italic leading-none whitespace-nowrap -rotate-12 select-none">GTA EXPERTS</h2>
-                    </div>
+                    {/* Removed slanted 'GTA EXPERTS' watermark from here as requested */}
                  </div>
               </div>
 
@@ -437,7 +435,7 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4">
            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-16 mb-24">
               <div className="lg:col-span-2 space-y-10">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
                   <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center shadow-lg shadow-red-600/20">
                     <img src="https://torontoairsystems.ca/wp-content/uploads/2023/10/tas-logo.png" alt="TAS" className="h-8 brightness-0 invert" />
                   </div>
@@ -463,14 +461,17 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <FooterNav title="Heating" items={["Furnaces", "Boilers", "Heat Pumps", "Water Heaters", "Gas Lines"]} />
-              <FooterNav title="Cooling" items={["Central Air", "Ductless Split", "AC Repair", "Maintenance", "Commercial"]} />
-              <FooterNav title="Our Company" items={["About TAS", "Careers", "News", "Privacy Policy", "Contact"]} />
+              <FooterNav title="Heating" items={["Furnaces", "Boilers", "Heat Pumps", "Water Heaters", "Gas Lines"]} onClick={(target) => scrollToSection(target)} />
+              <FooterNav title="Cooling" items={["Central Air", "Ductless Split", "AC Repair", "Maintenance", "Commercial"]} onClick={(target) => scrollToSection(target)} />
+              <FooterNav title="Our Company" items={["About TAS", "Careers", "News", "Privacy Policy", "Contact"]} onClick={(target) => scrollToSection(target)} />
            </div>
 
            <div className="flex flex-col md:flex-row items-center justify-between pt-16 border-t border-white/5 text-[11px] font-black text-gray-600 uppercase tracking-[0.2em] gap-8">
               <div className="flex flex-col md:flex-row items-center gap-10">
-                 <button className="bg-white/5 text-white px-8 py-3 rounded-xl flex items-center gap-4 hover:bg-white/10 transition-all border border-white/10">
+                 <button 
+                  onClick={() => alert("Redirecting to location map...")}
+                  className="bg-white/5 text-white px-8 py-3 rounded-xl flex items-center gap-4 hover:bg-white/10 transition-all border border-white/10"
+                 >
                    <MapPin className="w-4 h-4 text-red-600" /> TORONTO HQ
                  </button>
                  <span>© 2025 TORONTO AIR SYSTEMS. ALL RIGHTS RESERVED.</span>
@@ -512,7 +513,7 @@ const App: React.FC = () => {
 };
 
 const ServiceItem = ({ icon, title }: { icon: React.ReactNode, title: string }) => (
-  <div className="group cursor-pointer">
+  <div className="group cursor-pointer" onClick={() => alert(`Redirecting to ${title} specialized services...`)}>
     <div className="w-20 h-20 mx-auto mb-8 flex items-center justify-center bg-gray-50 rounded-3xl border-2 border-transparent group-hover:border-red-500 group-hover:bg-white transition-all shadow-lg group-hover:shadow-red-100">
       {React.cloneElement(icon as React.ReactElement, { className: 'w-10 h-10 text-[#003366] transition-all group-hover:scale-110 group-hover:text-red-600' })}
     </div>
@@ -548,19 +549,33 @@ const StepItem = ({ num, title, desc }: { num: number, title: string, desc: stri
   </div>
 );
 
-const FooterNav = ({ title, items }: { title: string, items: string[] }) => (
+const FooterNav = ({ title, items, onClick }: { title: string, items: string[], onClick: (target: string) => void }) => (
   <div className="space-y-8">
     <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-white/40">{title}</h4>
     <ul className="text-sm text-gray-500 space-y-5 font-bold uppercase tracking-widest">
       {items.map((item, i) => (
-        <li key={i}><a href="#" onClick={(e) => e.preventDefault()} className="hover:text-red-600 transition-colors">{item}</a></li>
+        <li key={i}>
+          <a 
+            href="#" 
+            onClick={(e) => { 
+              e.preventDefault(); 
+              if (item.toLowerCase().includes('heating')) onClick('heating');
+              else if (item.toLowerCase().includes('cooling')) onClick('cooling');
+              else if (item.toLowerCase().includes('about')) onClick('why-choose');
+              else alert(`${item} page navigation: coming soon.`);
+            }} 
+            className="hover:text-red-600 transition-colors"
+          >
+            {item}
+          </a>
+        </li>
       ))}
     </ul>
   </div>
 );
 
 const SocialIcon = ({ icon }: { icon: React.ReactNode }) => (
-  <a href="#" onClick={(e) => e.preventDefault()} className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-600 hover:text-white hover:border-red-500 transition-all active:scale-90">
+  <a href="#" onClick={(e) => { e.preventDefault(); alert("Social link: coming soon."); }} className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-red-600 hover:text-white hover:border-red-500 transition-all active:scale-90">
     {React.cloneElement(icon as React.ReactElement, { className: 'w-5 h-5' })}
   </a>
 );
