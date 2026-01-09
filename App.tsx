@@ -28,7 +28,6 @@ const App: React.FC = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
-  // Smooth scroll helper to ensure all buttons and links work within the landing page
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -325,14 +324,48 @@ const App: React.FC = () => {
         </div>
       </section>
 
-      {/* 5 Simple Steps */}
-      <section id="steps" className="py-36 bg-white">
+      {/* 5 Simple Steps - Map Enhanced for Live Demo */}
+      <section id="steps" className="py-36 bg-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
            <div className="flex flex-col lg:flex-row items-center gap-24">
               <div className="flex-1 relative order-2 lg:order-1">
-                 <div className="relative z-10 transform lg:scale-125">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Map_of_the_Greater_Toronto_Area.svg/800px-Map_of_the_Greater_Toronto_Area.svg.png" alt="GTA Coverage Map" className="w-full h-auto opacity-10 grayscale" />
-                    {/* Removed slanted 'GTA EXPERTS' watermark from here as requested */}
+                 <div className="relative z-10 transform lg:scale-110">
+                    <div className="relative rounded-[3rem] overflow-hidden shadow-inner border border-gray-100 bg-[#f8f9fa] p-12">
+                      <img 
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Map_of_the_Greater_Toronto_Area.svg/800px-Map_of_the_Greater_Toronto_Area.svg.png" 
+                        alt="GTA Coverage Map" 
+                        className="w-full h-auto opacity-40 grayscale hover:grayscale-0 transition-all duration-700 hover:opacity-100 mix-blend-multiply" 
+                      />
+                      
+                      {/* Tactical Service Node Markers - Demo Overlay */}
+                      <div className="absolute inset-0 p-12 pointer-events-none">
+                         <div className="relative w-full h-full">
+                            {/* Toronto Node */}
+                            <ServiceNode x="60%" y="65%" label="Old Toronto" />
+                            {/* Mississauga Node */}
+                            <ServiceNode x="42%" y="72%" label="Mississauga" />
+                            {/* Brampton Node */}
+                            <ServiceNode x="35%" y="60%" label="Brampton" />
+                            {/* North York Node */}
+                            <ServiceNode x="58%" y="50%" label="North York" />
+                            {/* Etobicoke Node */}
+                            <ServiceNode x="50%" y="65%" label="Etobicoke" />
+                            {/* Scarborough Node */}
+                            <ServiceNode x="75%" y="55%" label="Scarborough" />
+                         </div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-8 flex justify-center items-center gap-8">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-[#003366] rounded-full animate-pulse" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Primary Hubs</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-600 rounded-full animate-ping" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Emergency Units</span>
+                      </div>
+                    </div>
                  </div>
               </div>
 
@@ -507,10 +540,30 @@ const App: React.FC = () => {
         ::-webkit-scrollbar-track { background: #000814; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border: 3px solid #000814; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #d6001c; }
+        
+        @keyframes pulse-node {
+          0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+          50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+        }
+        .animate-pulse-node {
+          animation: pulse-node 2s infinite ease-in-out;
+        }
       `}</style>
     </div>
   );
 };
+
+const ServiceNode = ({ x, y, label }: { x: string, y: string, label: string }) => (
+  <div className="absolute transition-all duration-700 hover:scale-150 group cursor-pointer" style={{ left: x, top: y }}>
+     <div className="relative">
+        <div className="w-4 h-4 bg-[#003366] rounded-full border-2 border-white shadow-xl animate-pulse-node" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-[#003366]/20 rounded-full blur-md group-hover:bg-red-600/40" />
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white/90 backdrop-blur-md px-3 py-1 rounded-lg border border-gray-200 opacity-0 group-hover:opacity-100 transition-all shadow-xl pointer-events-none z-30">
+           <span className="text-[10px] font-black text-[#003366] uppercase tracking-widest">{label}</span>
+        </div>
+     </div>
+  </div>
+);
 
 const ServiceItem = ({ icon, title }: { icon: React.ReactNode, title: string }) => (
   <div className="group cursor-pointer" onClick={() => alert(`Redirecting to ${title} specialized services...`)}>
